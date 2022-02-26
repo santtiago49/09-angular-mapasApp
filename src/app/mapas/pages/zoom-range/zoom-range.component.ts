@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 
 @Component({
@@ -17,6 +17,7 @@ import * as mapboxgl from 'mapbox-gl';
 
       z-index: 999999;
       position: fixed;  
+      width: 400px;
       padding: 5px;
       border-radius: 5px;
       bottom: 50px;
@@ -29,6 +30,9 @@ export class ZoomRangeComponent implements AfterViewInit {
 
   @ViewChild('mapa') divMapa!: ElementRef;
   mapa!: mapboxgl.Map;
+  zoomLevel: number = 10;
+  center: [number, number] = [ -58.20388025208802 , -26.18991188567927 ];
+
 
   constructor() {}
 
@@ -37,18 +41,42 @@ export class ZoomRangeComponent implements AfterViewInit {
     this.mapa = new mapboxgl.Map({
       container: this.divMapa.nativeElement,
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [ -58.20388025208802 , -26.18991188567927 ],
-      zoom: 15
+      center: this.center,
+      zoom: this.zoomLevel
     });
 
-  }
+    // config listeners
+    this.mapa.on('zoom', (ev) => {
+      const zoomActual = this.mapa.getZoom();
+      this.zoomLevel = zoomActual
+    })
+
+    this.mapa.on('zoomend', (ev) => {
+      if( this.mapa.getZoom() > 18){
+        this.mapa.zoomTo(18)
+      }
+    })
+
+    this.mapa.on('move', (evento) => {
+      const target = evento.target;
+
+      const { lng, lat } = target.getCenter()
+
+      this.center = [ lng, lat ]
+    })
+
+    }
 
   zoomOut(){
-    // console.log(this.divMapa)
-    this.mapa.zoomOut()
+    this.mapa.zoomOut();
   }
 
   zoomIn(){
-    this.mapa.zoomIn()    
+    this.mapa.zoomIn();
   }
+
+  zoomCambio(valor: string){
+    this.mapa.zoomTo(Number(valor));
+  }
+
 }
