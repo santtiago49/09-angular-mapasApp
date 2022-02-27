@@ -46,7 +46,6 @@ export class MarcadoresComponent implements AfterViewInit {
       center: this.center,
       zoom: this.zoomLevel
     });
-
     
 
     // new mapboxgl.Marker()
@@ -64,13 +63,17 @@ export class MarcadoresComponent implements AfterViewInit {
       color,
       draggable: true
     })
-      .setLngLat(this.center)
+      .setLngLat(this.mapa.getCenter())
       .addTo(this.mapa)
 
     this.marcadores.push({ color, marcador })
   }
 
-  irMarcador(){
+  irMarcador(marcador: mapboxgl.Marker){
+    this.mapa.flyTo({
+      center: marcador.getLngLat(),
+      zoom: 16
+    })
   }
 
 }

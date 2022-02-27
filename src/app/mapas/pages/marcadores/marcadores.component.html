@@ -3,9 +3,9 @@
         class="list-group-item">
         + Agregar
     </li>
-    <li (click)="irMarcador()"
-        class="list-group-item"
+    <li class="list-group-item"
         *ngFor="let marcador of marcadores; let i = index"
+        (click)="irMarcador(marcador.marcador)"
         [ngStyle]="{
             'background-color': marcador.color
         }">
